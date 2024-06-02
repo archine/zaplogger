@@ -9,14 +9,14 @@
 * Get
 
 ```bash
-go get github.com/archine/zaplogger@v1.0.0
+go get github.com/archine/zaplogger@v1.0.1
 ```
 
 * Mod
 
 ```bash
 # go.mod文件加入下面的一条
-github.com/archine/zaplogger v1.0.0
+github.com/archine/zaplogger v1.0.1
 
 # 命令行在该项目目录下执行
 go mod tidy
