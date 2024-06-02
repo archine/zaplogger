@@ -134,7 +134,8 @@ func main() {
 
 控制台输出
 
-![img.png](img.png)
+![img](https://github.com/archine/zaplogger/assets/35919643/e4d1e95e-92c5-4512-94dd-71ca664d7516)
+
 
 ### 5、打印堆栈
 
