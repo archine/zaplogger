@@ -249,7 +249,7 @@ import (
 )
 
 func main() {
-    conf := &zaplogger.Config{
+        conf := &zaplogger.Config{
             ApplyFields: func(ctx context.Context) []zap.Field {
                 var fields []zap.Field
                 // 读取ctx中的trace_id，然后设置到日志中
