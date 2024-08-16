@@ -1,25 +1,26 @@
 package zaplogger
 
 import (
-	"context"
 	"fmt"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
 	"os"
 )
 
-// Logger wrap the zap logger
+// Logger wraps the zap.Logger, providing additional configuration options.
 type Logger struct {
 	*zap.Logger
 	conf *Config
 }
 
-// defaultLogger default zap logger wrapper
+// defaultLogger is the global instance of the Logger.
 var defaultLogger *Logger
 
+// Init initializes the Logger with the provided configuration.
+// If the configuration is nil or incomplete, default values are applied.
 func Init(conf *Config) error {
 	if conf == nil {
-		return fmt.Errorf("the loggers configuration is nil, please check it")
+		return fmt.Errorf("logger configuration is nil, please check it")
 	}
 	if conf.Level == "" {
 		conf.Level = "debug"
@@ -31,11 +32,6 @@ func Init(conf *Config) error {
 	if conf.Format == "" {
 		conf.Format = "console"
 	}
-	if conf.ApplyFields == nil {
-		conf.ApplyFields = func(ctx context.Context) []zap.Field {
-			return nil
-		}
-	}
 	if conf.ApplyEncoder == nil {
 		conf.ApplyEncoder = func(format string, ec zapcore.EncoderConfig, conf BasicConfig) (zapcore.Encoder, error) {
 			if format == "json" {
@@ -46,7 +42,7 @@ func Init(conf *Config) error {
 	}
 	if conf.ApplyCores == nil {
 		conf.ApplyCores = func(enc zapcore.Encoder, level zapcore.LevelEnabler, conf BasicConfig) (zapcore.Core, error) {
-			return zapcore.NewCore(enc, os.Stdout, level), nil
+			return zapcore.NewCore(enc, os.Stderr, level), nil
 		}
 	}
 	ec := zapcore.EncoderConfig{
@@ -64,19 +60,17 @@ func Init(conf *Config) error {
 		ConsoleSeparator: conf.ConsoleSeparator,
 	}
 	if conf.LevelColor && conf.Format == "console" {
-		// level color
+		// Apply level color coding when in console format
 		ec.EncodeLevel = zapcore.CapitalColorLevelEncoder
 	}
 	if conf.PrintStacktrace {
 		conf.Options = append(conf.Options, zap.AddCaller(), zap.AddStacktrace(zapcore.ErrorLevel))
-	} else {
-		conf.Options = append(conf.Options, zap.AddCaller())
 	}
-	encoder, err := conf.ApplyEncoder(conf.Format, ec, conf.BasicConfig) // apply encoder
+	encoder, err := conf.ApplyEncoder(conf.Format, ec, conf.BasicConfig) // Apply encoder configuration
 	if err != nil {
 		return err
 	}
-	cores, err := conf.ApplyCores(encoder, level, conf.BasicConfig) // apply cores
+	cores, err := conf.ApplyCores(encoder, level, conf.BasicConfig) // Apply core configuration
 	if err != nil {
 		return err
 	}
@@ -85,37 +79,37 @@ func Init(conf *Config) error {
 	return nil
 }
 
-// DefaultLogger Get the default logger wrapper
+// DefaultLogger returns the global instance of the Logger.
 func DefaultLogger() *Logger {
 	return defaultLogger
 }
 
-// Info Output info level log
+// Info logs an informational message.
 func Info(msg string, fields ...zap.Field) {
 	defaultLogger.Info(msg, fields...)
 }
 
-// Debug Debug Output debug level log
+// Debug logs a debug-level message.
 func Debug(msg string, fields ...zap.Field) {
 	defaultLogger.Debug(msg, fields...)
 }
 
-// Warn Output warn level log
+// Warn logs a warning message.
 func Warn(msg string, fields ...zap.Field) {
 	defaultLogger.Warn(msg, fields...)
 }
 
-// Error Output error level log
+// Error logs an error message.
 func Error(msg string, fields ...zap.Field) {
 	defaultLogger.Error(msg, fields...)
 }
 
-// Fatal Output fatal level log
+// Fatal logs a fatal-level message and exits the application.
 func Fatal(msg string, fields ...zap.Field) {
 	defaultLogger.Fatal(msg, fields...)
 }
 
-// Panic Output panic level log
+// Panic logs a panic-level message and panics.
 func Panic(msg string, fields ...zap.Field) {
 	defaultLogger.Panic(msg, fields...)
 }

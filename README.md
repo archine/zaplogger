@@ -9,14 +9,14 @@
 * Get
 
 ```bash
-go get github.com/archine/zaplogger@v1.0.1
+go get github.com/archine/zaplogger@v1.0.2
 ```
 
 * Mod
 
 ```bash
 # go.mod文件加入下面的一条
-github.com/archine/zaplogger v1.0.1
+github.com/archine/zaplogger v1.0.2
 
 # 命令行在该项目目录下执行
 go mod tidy
@@ -249,25 +249,25 @@ import (
 )
 
 func main() {
-        conf := &zaplogger.Config{
-            ApplyFields: func(ctx context.Context) []zap.Field {
-                var fields []zap.Field
-                // 读取ctx中的trace_id，然后设置到日志中
-                traceId := ctx.Value("trace_id")
-                if traceId != nil {
-                    fields = append(fields, zap.String("trace_id", traceId.(string)))
-                }
-                return fields
-            },
-	}
-	if err := zaplogger.Init(conf); err != nil {
-		panic(err)
-	}
-
-	// 通过context传递trace_id
-	ctx := context.WithValue(context.Background(), "trace_id", "123456")
-
-	zaplogger.WithContext(ctx).Info("我是Info日志")
+    conf := &zaplogger.Config{
+        ApplyFields: func(ctx context.Context) []zap.Field {
+            var fields []zap.Field
+            // 读取ctx中的trace_id，然后设置到日志中
+            traceId := ctx.Value("trace_id")
+            if traceId != nil {
+                fields = append(fields, zap.String("trace_id", traceId.(string)))
+            }
+            return fields
+        },
+    }
+    if err := zaplogger.Init(conf); err != nil {
+        panic(err)
+    }
+    
+    // 通过context传递trace_id
+    ctx := context.WithValue(context.Background(), "trace_id", "123456")
+    
+    zaplogger.WithContext(ctx).Info("我是Info日志")
 }
 ```
 控制台输出
@@ -276,6 +276,7 @@ func main() {
 ```
 
 ### 9、替换Gin-Plus 默认的logger
+通过监听器去替换Gin-Plus默认的logger，下面的示例展示了如何替换Gin-Plus默认的logger。``以下基于Gin-Plus v3.3.0版本``，低于该版本请自行调整。
 ```go
 package main
 
@@ -283,17 +284,26 @@ import (
 	"github.com/archine/gin-plus/v3/application"
 	"github.com/archine/zaplogger"
 	"github.com/archine/zaplogger/ginplus"
+	"github.com/spf13/viper"
 )
+
+type AppConfigListener struct {}
+
+func (a *AppConfigListener) Read(v *viper.Viper) error {
+    return v.ReadInConfig()
+}
+
+func (a *AppConfigListener) After(v *viper.Viper) {
+    var conf zaplogger.Config
+    if err := zaplogger.Init(&conf); err != nil {
+        panic(err)
+    }
+    application.ChangeLogger(&zaplogger.GinPlusLoggerImpl{})
+}
 
 //go:generate gp-ast
 func main() {
-	var conf zaplogger.Config
-	if err := zaplogger.Init(&conf); err != nil {
-		panic(err)
-	}
-	application.Default().
-		Log(&ginplus.Logger{}).
-		Run()
+    application.Default(&AppConfigListener{}).Run()
 }
 ```
 控制台输出
