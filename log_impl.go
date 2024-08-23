@@ -1,29 +1,29 @@
 package zaplogger
 
 import (
-	"fmt"
+	"context"
 )
 
 // GinPlusLoggerImpl Implement the gin-plus Logger interface.
 // You can use this logger to replace the default gin-plus logger
 type GinPlusLoggerImpl struct{}
 
-func (g *GinPlusLoggerImpl) Info(msg string, args ...any) {
-	Info(fmt.Sprintf(msg, args...))
+func (g *GinPlusLoggerImpl) Info(msg string) {
+	Info(msg)
 }
 
-func (g *GinPlusLoggerImpl) Warn(msg string, args ...any) {
-	Warn(fmt.Sprintf(msg, args...))
+func (g *GinPlusLoggerImpl) Warn(msg string) {
+	Warn(msg)
 }
 
-func (g *GinPlusLoggerImpl) Debug(msg string, args ...any) {
-	Debug(fmt.Sprintf(msg, args...))
+func (g *GinPlusLoggerImpl) Debug(msg string) {
+	Debug(msg)
 }
 
-func (g *GinPlusLoggerImpl) Error(msg string, args ...any) {
-	Error(fmt.Sprintf(msg, args...))
+func (g *GinPlusLoggerImpl) Error(msg string) {
+	Error(msg)
 }
 
-func (g *GinPlusLoggerImpl) Fatal(msg string, args ...any) {
-	Fatal(fmt.Sprintf(msg, args...))
+func (g *GinPlusLoggerImpl) ErrorWithCtx(ctx context.Context, msg string) {
+	WithContext(ctx).Error(msg)
 }

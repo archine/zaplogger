@@ -9,14 +9,14 @@
 * Get
 
 ```bash
-go get github.com/archine/zaplogger@v1.0.2
+go get github.com/archine/zaplogger@v1.0.3
 ```
 
 * Mod
 
 ```bash
 # go.mod文件加入下面的一条
-github.com/archine/zaplogger v1.0.2
+github.com/archine/zaplogger v1.0.3
 
 # 命令行在该项目目录下执行
 go mod tidy
@@ -81,10 +81,10 @@ func main() {
 控制台输出
 
 ```bash
-2024-06-02 18:28:18     INFO    zaplogger/logger.go:89  我是Info日志
-2024-06-02 18:28:18     WARN    zaplogger/logger.go:99  我是Warn日志
-2024-06-02 18:28:18     DEBUG   zaplogger/logger.go:94  我是Debug日志
-2024-06-02 18:28:18     ERROR   zaplogger/logger.go:104 我是错误日志
+2024-06-02 18:28:18   INFO   我是Info日志
+2024-06-02 18:28:18   WARN   我是Warn日志
+2024-06-02 18:28:18   DEBUG  我是Debug日志
+2024-06-02 18:28:18   ERROR  我是错误日志
 ```
 
 ### 3、设置分隔符
@@ -108,7 +108,7 @@ func main() {
 控制台输出
 
 ```bash
-2024-06-02 18:33:39 | INFO | zaplogger/logger.go:89 | 我是Info日志
+2024-06-02 18:33:39 | INFO | 我是Info日志
 ```
 
 ### 4、开启日志级别色彩
@@ -158,7 +158,7 @@ func main() {
 控制台输出
 
 ```bash
-2024-06-02 18:38:18     ERROR   zaplogger/logger.go:104 我是错误日志
+2024-06-02 18:38:18  ERROR  我是错误日志
 goroutine 1 [running]:
 main.main()
     /Users/archine/go/src/github.com/archine/zaplogger/example/main.go:13 +0x1b4
@@ -272,7 +272,7 @@ func main() {
 ```
 控制台输出
 ```bash
-2024-06-02 21:13:51     INFO    zaplogger-demo/main.go:27       我是Info日志    {"trace_id": "123456"}
+2024-06-02 21:13:51  INFO  我是Info日志    {"trace_id": "123456"}
 ```
 
 ### 9、替换Gin-Plus 默认的logger
@@ -308,7 +308,7 @@ func main() {
 ```
 控制台输出
 ```bash
-2024-06-02 21:22:13     INFO    zaplogger/logger.go:95  Application start success on Ports:[4006]
+2024-06-02 21:22:13   INFO   Application start success on Ports:[4006]
 ```
 
 ---
